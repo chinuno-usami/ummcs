@@ -1,3 +1,6 @@
 [submodule "project/miraipp"]
 	path = project/miraipp
 	url = https://github.com/Chlorie/miraipp-library.git
+[submodule "feedparser"]
+	path = feedparser
+	url = https://github.com/chinuno-usami/feedparser.git

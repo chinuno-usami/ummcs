@@ -1,11 +1,30 @@
 # User code, which contains the main() function and builds to an executable
+#ultimate mecha musume core system
 
-set(APP_NAME app)
+set(APP_NAME ummcs)
 
-set(SOURCE_FILES main.cpp) # Add new source files into this list
+set(SOURCE_FILES
+    main.cpp 
+    rss.cpp
+    storage.cpp
+    rss_parser.cpp
+    configure.cpp
+    modules/module.cpp
+    modules/nbnhhsh.cpp
+    modules/core.cpp
+    modules/feed.cpp
+    ) # Add new source files into this list
+
+find_package(ZLIB)
+find_package(RocksDB CONFIG REQUIRED)
+
+find_path(GUMBO_INCLUDE_DIR gumbo.h )
+find_library(GUMBO_LIBRARY gumbo)
+link_libraries(${GUMBO_LIBRARY} ${PROJECT_SOURCE_DIR}/../feedparser/target/release/libfeedparser.a )
 
 add_executable(${APP_NAME} ${SOURCE_FILES})
 
+include_directories(. /usr/include/libxml2 ${GUMBO_INCLUDE_DIR})
 target_compile_features(${APP_NAME} PRIVATE cxx_std_17) # Enforce C++17 or newer
 set_target_properties(${APP_NAME} PROPERTIES CXX_EXTENSIONS off)
 
@@ -31,4 +50,7 @@ else () # Not Visual Studio, assuming gcc or clang
 endif ()
 
 target_link_libraries(${APP_NAME} PRIVATE
-    miraipp)
+    miraipp
+    RocksDB::rocksdb RocksDB::rocksdb-shared
+    ZLIB::ZLIB
+    )
