@@ -17,13 +17,13 @@ jobs:
         include:
           - os: ubuntu-latest
             triplet: x64-linux
-            vcpkgPackages: 'cpr websocketpp asio libiconv nlohmann-json'
+            vcpkgPackages: 'cpr websocketpp asio libiconv nlohmann-json rocksdb gumbo toml11'
             vcpkgCommitId: 'c7ab9d3110813979a873b2dbac630a9ab79850dc'
             cc: gcc-9
             cxx: g++-9
           - os: windows-latest
             triplet: x64-windows
-            vcpkgPackages: 'cpr websocketpp asio libiconv nlohmann-json'
+            vcpkgPackages: 'cpr websocketpp asio libiconv nlohmann-json rocksdb gumbo toml11'
             vcpkgCommitId: 'c7ab9d3110813979a873b2dbac630a9ab79850dc'
             cc: cl
             cxx: cl
@@ -51,6 +51,11 @@ jobs:
           vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
       - name: Prints outputs of run-vcpkg task
         run: echo "'${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}' '${{  steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}' "
+      - name: Build feedparser
+        uses: icepuma/rust-action@master
+        id: runcargo
+        with:
+            args: cd feedparser && cargo build --release
       - name: Run CMake+Ninja with triplet
         uses: lukka/run-cmake@v2
         id: runcmake
