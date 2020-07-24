@@ -20,7 +20,7 @@ find_package(RocksDB CONFIG REQUIRED)
 
 find_path(GUMBO_INCLUDE_DIR gumbo.h )
 find_library(GUMBO_LIBRARY gumbo)
-link_libraries(${GUMBO_LIBRARY} ${PROJECT_SOURCE_DIR}/../feedparser/target/release/libfeedparser.a )
+link_libraries(${GUMBO_LIBRARY} ${PROJECT_SOURCE_DIR}/feedparser/target/release/libfeedparser.a )
 
 add_executable(${APP_NAME} ${SOURCE_FILES})
 
