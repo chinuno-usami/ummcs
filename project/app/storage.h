@@ -21,5 +21,7 @@ namespace ummcs
 
         bool create_cf(const std::string& name);
         bool drop_cf(const std::string& cf);
+        // 需要手动delete
+        rocksdb::Iterator* new_iter(const std::string& name);
     };
 } // namespace ummcs

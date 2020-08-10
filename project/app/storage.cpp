@@ -143,5 +143,9 @@ bool Storage::drop_cf(const std::string& cf){
     return false;
 }
 
+rocksdb::Iterator* Storage::new_iter(const std::string& cf){
+    return db_->NewIterator(rocksdb::ReadOptions(), cf_handles_[cf]);
+}
+
 template bool Storage::put_value<time_t>(const std::string& cf, const std::string& key, time_t value);
 template time_t Storage::get_value<time_t>(const std::string& cf, const std::string& key);

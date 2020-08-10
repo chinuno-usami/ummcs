@@ -13,6 +13,8 @@ set(SOURCE_FILES
     modules/nbnhhsh.cpp
     modules/core.cpp
     modules/feed.cpp
+    modules/autoban.cpp
+    modules/bilibili.cpp
     ) # Add new source files into this list
 
 find_package(ZLIB)

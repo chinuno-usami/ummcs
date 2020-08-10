@@ -3,6 +3,8 @@
 #include "core.h"
 #include "nbnhhsh.h"
 #include "feed.h"
+#include "autoban.h"
+#include "bilibili.h"
 #include "log.h"
 using namespace ummcs;
 
@@ -10,6 +12,8 @@ void ModuleManager::regist_modules(){
     module_factories_.insert({"nbnhhsh", [this] { return std::make_shared<Nbnhhsh>(storage_); }});
     module_factories_.insert({"feed", [this] { return std::make_shared<FeedModule>(storage_); }});
     module_factories_.insert({"core", [this] { return std::make_shared<CoreModule>(storage_); }});
+    module_factories_.insert({"autoban", [this] { return std::make_shared<Autoban>(storage_); }});
+    module_factories_.insert({"bilibili", [this] { return std::make_shared<Bilibili>(storage_); }});
 }
 
 void ModuleManager::load_modules(){

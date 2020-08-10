@@ -29,6 +29,20 @@ url = "https://rsshub.app/arknights/news"
 groups_enable = []
 users_enable = []
 
+[modules.autoban]
+name = "嘴臭ban人"
+enable = true
+groups_enable = []
+users_enable = []
+admins = []
+
+[modules.bilibili]
+name = "守护最好的bilibili"
+enable = true
+groups_enable = []
+users_enable = []
+admins = []
+
 # 核心模块，进行基本操作
 [modules.core]
 name = "系统核心"
@@ -39,6 +53,9 @@ admins = []
 about = '''运行UMMCS的试做型中二机娘
 目前支持指令
 nbnhhsh [包含缩写的句子] -> 不能好好说话
+banrule add [正则表达式] -> 添加ban人规则
+banrule list -> 列出本群ban人规则
+banrule del [ID] -> 移除ban人规则
 about -> 本信息
 list_modules -> 列出当前模块列表
 clean_data [模块ID] -> 删除模块数据，仅管理员可用。注意删除前先禁用模块'''
