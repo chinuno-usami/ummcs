@@ -12,7 +12,7 @@
 #define LOG_DEBUG(format, ...) do{\
     std::time_t t = std::time(0);\
     std::tm* now = std::localtime(&t);\
-    fprintf(stderr, COLR_GREEN "%d-%d-%d %d:%d:%d [DEBUG] [" format "] [%s,%s:%d]" COLR_NONE "\n",\
+    fprintf(stderr, COLR_GREEN "%d-%02d-%02d %02d:%02d:%02d [DEBUG] [" format "] [%s,%s:%d]" COLR_NONE "\n",\
             now->tm_year+1900, \
             now->tm_mon+1, \
             now->tm_mday, \
@@ -24,7 +24,7 @@
 #define LOG_WARN(format, ...) do{\
     std::time_t t = std::time(0);\
     std::tm* now = std::localtime(&t);\
-    fprintf(stderr, COLR_YELLOW "%d-%d-%d %d:%d:%d [WARN] [" format "] [%s,%s:%d]" COLR_NONE "\n",\
+    fprintf(stderr, COLR_YELLOW "%d-%02d-%02d %02d:%02d:%02d [WARN] [" format "] [%s,%s:%d]" COLR_NONE "\n",\
             now->tm_year+1900, \
             now->tm_mon+1, \
             now->tm_mday, \
@@ -36,7 +36,7 @@
 #define LOG_ERROR(format, ...) do{\
     std::time_t t = std::time(0);\
     std::tm* now = std::localtime(&t);\
-    fprintf(stderr, COLR_RED "%d-%d-%d %d:%d:%d [ERROR] [" format "] [%s,%s:%d]" COLR_NONE "\n",\
+    fprintf(stderr, COLR_RED "%d-%02d-%02d %02d:%02d:%02d [ERROR] [" format "] [%s,%s:%d]" COLR_NONE "\n",\
             now->tm_year+1900, \
             now->tm_mon+1, \
             now->tm_mday, \
