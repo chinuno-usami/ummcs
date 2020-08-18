@@ -65,7 +65,7 @@ void Autoban::process(const mirai::Event& e, mirai::Session& sess) {
         if(it == rules_.end()){ return; }
         for(size_t i = 0; i < it->second.size(); ++i){
             std::smatch match;
-            if (std::regex_match(str, match, it->second[i].re)) {
+            if (std::regex_search(str, match, it->second[i].re)) {
                 // 匹配
                 // 检查bot权限
                 if(ev.sender.group.permission == mirai::Permission::member){

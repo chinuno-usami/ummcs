@@ -20,11 +20,11 @@ void Bilibili::process(const mirai::Event& e, mirai::Session& sess) {
         }
         const std::string str = ev.message.content.stringify();
         Bilibili::VideoInfo info;
-        static const std::regex re_app(u8R"RE(.*https:\\?\\?/\\?\\?/b23.tv\\?\\?/([0-9a-zA-Z]+).*)RE");
-        static const std::regex re_aid(u8R"RE(.*https://www.bilibili.com/video/av(\d+).*)RE");
-        static const std::regex re_bid(u8R"RE(.*https://www.bilibili.com/video/(BV[0-9a-zA-Z]+).*)RE");
+        static const std::regex re_app(u8R"RE(https:\\?\\?/\\?\\?/b23.tv\\?\\?/([0-9a-zA-Z]+))RE");
+        static const std::regex re_aid(u8R"RE(https://www.bilibili.com/video/av(\d+))RE");
+        static const std::regex re_bid(u8R"RE(https://www.bilibili.com/video/(BV[0-9a-zA-Z]+))RE");
         std::smatch match;
-        if (std::regex_match(str, match, re_app)){
+        if (std::regex_search(str, match, re_app)){
             // 检查是否小程序
             mirai::msg::Image meme;
             meme.url = "https://i.loli.net/2020/04/27/HegAkGhcr6lbPXv.png";
@@ -32,10 +32,10 @@ void Bilibili::process(const mirai::Event& e, mirai::Session& sess) {
             //sess.send_quote_message(ev, mirai::Message(meme));
             const auto [path] = mirai::utils::parse_captures<void, std::string>(match);
             info = get_info_app(path);
-        } else if (std::regex_match(str, match, re_aid)) {
+        } else if (std::regex_search(str, match, re_aid)) {
             const auto [id] = mirai::utils::parse_captures<void, std::string>(match);
             info = get_info(Bilibili::IdType::AID, id);
-        } else if (std::regex_match(str, match, re_bid)) {
+        } else if (std::regex_search(str, match, re_bid)) {
             const auto [id] = mirai::utils::parse_captures<void, std::string>(match);
             info = get_info(Bilibili::IdType::BVID, id);
         } else {
