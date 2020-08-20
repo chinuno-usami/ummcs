@@ -3,6 +3,13 @@ auth_key = "********"
 admins = [ADMIN_QQ_NUM]
 
 [modules]
+[modules.saucenao]
+name = "搜图"
+enable = true
+groups_enable = []
+users_enable = []
+admins = []
+
 [modules.nbnhhsh]
 name = "能不能好好说话"
 enable = true
@@ -56,6 +63,7 @@ nbnhhsh [包含缩写的句子] -> 不能好好说话
 banrule add [正则表达式] -> 添加ban人规则
 banrule list -> 列出本群ban人规则
 banrule del [ID] -> 移除ban人规则
+搜图[图片] -> 以图搜图
 about -> 本信息
 list_modules -> 列出当前模块列表
 clean_data [模块ID] -> 删除模块数据，仅管理员可用。注意删除前先禁用模块'''
