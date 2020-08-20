@@ -15,6 +15,7 @@ set(SOURCE_FILES
     modules/feed.cpp
     modules/autoban.cpp
     modules/bilibili.cpp
+    modules/saucenao.cpp
     ) # Add new source files into this list
 
 find_package(ZLIB)
