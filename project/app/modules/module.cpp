@@ -6,6 +6,7 @@
 #include "autoban.h"
 #include "bilibili.h"
 #include "saucenao.h"
+#include "setu.h"
 #include "log.h"
 using namespace ummcs;
 
@@ -16,6 +17,7 @@ void ModuleManager::regist_modules(){
     module_factories_.insert({"autoban", [this] { return std::make_shared<Autoban>(storage_); }});
     module_factories_.insert({"bilibili", [this] { return std::make_shared<Bilibili>(storage_); }});
     module_factories_.insert({"saucenao", [this] { return std::make_shared<Saucenao>(storage_); }});
+    module_factories_.insert({"setu", [this] { return std::make_shared<Setu>(storage_); }});
 }
 
 void ModuleManager::load_modules(){
