@@ -88,6 +88,9 @@ mirai::Message Setu::process_message_group(int r18, const mirai::Message& msg){
             return mirai::Message();
         }
         auto plain_view = mirai::utils::trim_whitespace(plain.view());
+        if(plain_view == u8"图"){
+            return get_result_nose();
+        }
         if(plain_view == u8"色图"){
             return get_result(r18, ""sv);
         }
@@ -108,6 +111,9 @@ mirai::Message Setu::process_message_friend(int r18, const mirai::Message& msg){
     {
         const auto [plain] = *opt;
         auto plain_view = mirai::utils::trim_whitespace(plain.view());
+        if(plain_view == u8"图"){
+            return get_result_nose();
+        }
         if(plain_view == u8"色图"){
             return get_result(r18, ""sv);
         }
@@ -166,4 +172,27 @@ mirai::Message Setu::get_result(int r18, const std::string_view keyword){
     msg += u8"\n作者ID:";
     msg += std::to_string(setu["uid"].get<int>());
     return msg;
+}
+
+mirai::Message Setu::get_result_nose(){
+    using json = nlohmann::json;
+    cpr::Response r = cpr::Get(cpr::Url{"http://www.dmoe.cc/random.php?return=json"});
+    if (r.status_code != 200)
+    {
+        std::string ret(u8"随机图api好像挂了:");
+        ret.append(std::to_string(r.status_code));
+        return ret;
+    }
+    auto results = json::parse(r.text);
+    LOG_DEBUG("%s",r.text.c_str());
+    // 傻逼PHP！好好给数字不行吗？会死吗？为什么所有PHP后端给的类型都要是字符串！
+    auto code = std::stoi(results["code"].get<std::string>());
+    if(code != 200){
+        std::string ret(u8"随机图api好像挂了:");
+        ret.append(std::to_string(r.status_code));
+        return ret;
+    }
+    mirai::msg::Image pic;
+    pic.url = results["imgurl"].get<std::string>();
+    return mirai::Message(pic);
 }

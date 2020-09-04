@@ -16,6 +16,7 @@ namespace ummcs{
 
     private:
         mirai::Message get_result(int r18, const std::string_view keyword);
+        mirai::Message get_result_nose();
         mirai::Message process_message_friend(int r18, const mirai::Message& msg);
         mirai::Message process_message_group(int r18, const mirai::Message& msg);
         // id, r18

@@ -91,6 +91,8 @@ banrule add [正则表达式] -> 添加ban人规则
 banrule list -> 列出本群ban人规则
 banrule del [ID] -> 移除ban人规则
 搜图[图片] -> 以图搜图
+图 -> 随机美图
+色图 -> 随机色图
 [关键字]色图 -> 色图！
 about -> 本信息
 list_modules -> 列出当前模块列表
