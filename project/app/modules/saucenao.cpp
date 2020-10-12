@@ -9,13 +9,11 @@ using namespace ummcs;
 using namespace mirai;
 
 void Saucenao::process(const mirai::Event& e, mirai::Session& sess) {
-    static constexpr std::string_view deny = u8"dbq。你没有权限可以搜图";
     if (e.type() == mirai::EventType::group_message) {
         const auto &ev = e.get<mirai::GroupMessage>();
 
         bool enable = check_user_enable(ev.sender.id) || check_group_enable(ev.sender.group.id);
         if (!enable){
-            sess.send_quote_message(ev, deny);
             return;
         }
         auto msg = process_message(ev.message.content);
@@ -28,7 +26,6 @@ void Saucenao::process(const mirai::Event& e, mirai::Session& sess) {
 
         bool enable = check_user_enable(ev.sender.id);
         if (!enable){
-            sess.send_message(ev.sender.id, deny);
             return;
         }
         auto msg = process_message(ev.message.content);
