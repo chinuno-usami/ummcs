@@ -36,7 +36,7 @@ jobs:
         run: gci -recurse ${{ runner.workspace }}
         if: contains( matrix.os, 'windows')
       - name: Run vcpkg
-        uses: lukka/run-vcpkg@master
+        uses: lukka/run-vcpkg@main
         id: runvcpkg
         with:
           vcpkgArguments: '${{ matrix.vcpkgPackages }}'
