@@ -45,12 +45,17 @@ void FeedModule::run(mirai::Session& sess){
         ritem->callback = [&sess, id, this](FeedInfo* feedp){
             RssParser parser;
             FeedInfo& feed = *feedp;
-            static time_t latest_time = storage_.get_value<time_t>(config_->id, "last_ts"s);
+            time_t latest_time = 0;
+            try {
+                latest_time = storage_.get_value<time_t>(config_->id, id+"_last_ts"s);
+            } catch (...) {
+                LOG_DEBUG(u8"首次获取");
+                storage_.put_value<time_t>(config_->id, id+"_last_ts"s, latest_time);
+            }
             time_t new_time = latest_time;
             bool first_time = latest_time == 0? true:false;
             size_t size = feed.size;
             std::string feed_title = feedstring2string(feed.title);
-            mirai::Message msg;
             //LOG_DEBUG(u8"个数:%lu", size);
             for(size_t i = 0; i < size; ++i){
                 FeedEntry& entry = feed.entries[i];
@@ -62,9 +67,10 @@ void FeedModule::run(mirai::Session& sess){
                 } else {
                     //LOG_DEBUG("process new item");
                 }
-                if(!msg.empty()) {
-                    msg += "\n\n";
-                }
+                //if(!msg.empty()) {
+                //    msg += "\n\n";
+                //}
+                mirai::Message msg;
                 msg += u8"来源:";
                 //LOG_DEBUG(u8"来源:%s", feed_title.c_str());
                 msg += feed_title+"\n";
@@ -87,22 +93,34 @@ void FeedModule::run(mirai::Session& sess){
                 } else {
                     //LOG_DEBUG("new:%lu,item:%lu", new_time, item_time);
                 }
+                if(first_time) { break; }
+                if(msg.empty()){ continue; }
+                for(auto gid:item_enable_groups[id]){
+                    try {
+                        sess.send_message(mirai::gid_t(gid), msg);
+                    } catch (std::exception& e){
+                        LOG_ERROR("%s", e.what());
+                    }
+                }
+                for(auto uid:item_enable_users[id]){
+                    sess.send_message(mirai::uid_t(uid), msg);
+                }
             }
             if(latest_time < new_time){
                 //LOG_DEBUG("update latest to %lu", new_time);
                 latest_time = new_time;
-                storage_.put_value<time_t>(config_->id, "last_ts"s, latest_time);
+                storage_.put_value<time_t>(config_->id, id+"_last_ts"s, latest_time);
             } else {
                 //LOG_DEBUG("new:%lu,latest:%lu", new_time, latest_time);
             }
-            if(first_time) { return; }
-            if(msg.empty()){ return; }
-            for(auto gid:item_enable_groups[id]){
-                sess.send_message(mirai::gid_t(gid), msg);
-            }
-            for(auto uid:item_enable_users[id]){
-                sess.send_message(mirai::uid_t(uid), msg);
-            }
+            //if(first_time) { return; }
+            //if(msg.empty()){ return; }
+            //for(auto gid:item_enable_groups[id]){
+            //    sess.send_message(mirai::gid_t(gid), msg);
+            //}
+            //for(auto uid:item_enable_users[id]){
+            //    sess.send_message(mirai::uid_t(uid), msg);
+            //}
         };
         rss_.add_item(ritem);
     }
