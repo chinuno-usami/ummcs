@@ -23,6 +23,9 @@ enable = true
 groups_enable = []
 users_enable = []
 admins = []
+plugin_image_path = "/home/cirno/miraiOK/new/./data/MiraiApiHttp/images/"
+use_proxy = true
+proxy = "socks5://127.0.0.1:1083"
 
 [[modules.feed.source]]
 name = "游戏打折资讯"

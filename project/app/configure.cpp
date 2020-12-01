@@ -9,7 +9,7 @@ Config& Config::get_instance()
 }
 
 void Config::parse(const char* path){
-    data = toml::parse(path);
+    data = toml::parse(std::filesystem::path(path));
     bot = toml::find<int64_t>(data, "bot");
     auth_key = toml::find<std::string>(data, "auth_key");
     toml::array& admins_arr = toml::find<toml::array>(data, "admins");
@@ -36,7 +36,7 @@ void Config::parse(const char* path){
         for (auto item : vec_groups_enable) {
             conf->groups_enable.emplace(item);
         }
-        
+
         modules_config.insert({val.first, conf});
     }
 }

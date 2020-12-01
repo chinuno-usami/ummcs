@@ -112,7 +112,8 @@ template<class T> T Storage::get_value(const std::string& cf, const std::string&
         return ret;
     } else {
         LOG_ERROR("%s", status.getState());
-        return T();
+        throw std::out_of_range(status.getState());
+        // return T();
     }
 }
 
@@ -125,7 +126,8 @@ std::string Storage::get_value<std::string>(const std::string& cf, const std::st
         return db_value;
     } else {
         LOG_ERROR("%s", status.getState());
-        return std::string();
+        throw std::out_of_range(status.getState());
+        // return std::string();
     }
 }
 

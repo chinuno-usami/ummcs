@@ -8,9 +8,11 @@ namespace ummcs{
     {
     private:
         void parse(GumboNode* node, mirai::Message& msg);
-        /* data */
+        bool use_proxy_;
+        std::string plugin_image_path_;
+        std::string proxy_;
     public:
-        RssParser() {}
+        RssParser();
         ~RssParser() {}
 
         mirai::Message parse_all(const std::string &html);

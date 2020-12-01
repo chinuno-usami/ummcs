@@ -133,13 +133,14 @@ mirai::Message Setu::get_result(int r18, const std::string_view keyword){
     sess.SetUrl(cpr::Url{"https://api.lolicon.app/setu/"});
     cpr::Parameters params{{"r18",std::to_string(r18)}};
 
+    cpr::CurlHolder holder;
     if(!keyword.empty()){
-        params.AddParameter({"keyword", keyword});
         std::string keyw(keyword.data(), keyword.size());
+        params.AddParameter(cpr::Parameter(std::string("keyword"), keyw), holder);
         LOG_DEBUG("色图关键字:%s", keyw.c_str());
     }
     if(!apikey_.empty()){
-        params.AddParameter({"apikey", apikey_});
+        params.AddParameter(cpr::Parameter(std::string("apikey"), std::string(apikey_)), holder);
     }
     sess.SetParameters(params);
     cpr::Response r = sess.Get();
@@ -149,8 +150,8 @@ mirai::Message Setu::get_result(int r18, const std::string_view keyword){
         ret.append(std::to_string(r.status_code));
         return ret;
     }
-    auto results = json::parse(r.text);
     LOG_DEBUG("%s",r.text.c_str());
+    auto results = json::parse(r.text);
     auto code = results["code"].get<int>();
     if(code != 0){
         return results["msg"].get<std::string>();
@@ -183,8 +184,8 @@ mirai::Message Setu::get_result_nose(){
         ret.append(std::to_string(r.status_code));
         return ret;
     }
-    auto results = json::parse(r.text);
     LOG_DEBUG("%s",r.text.c_str());
+    auto results = json::parse(r.text);
     // 傻逼PHP！好好给数字不行吗？会死吗？为什么所有PHP后端给的类型都要是字符串！
     auto code = std::stoi(results["code"].get<std::string>());
     if(code != 200){
