@@ -18,7 +18,7 @@ jobs:
           - os: ubuntu-latest
             triplet: x64-linux
             vcpkgPackages: 'cpr websocketpp asio libiconv nlohmann-json rocksdb gumbo toml11'
-            vcpkgCommitId: 'c7ab9d3110813979a873b2dbac630a9ab79850dc'
+            vcpkgCommitId: '65d742a57d9f6db031f8e9a356feb1dca4211cd3'
             cc: gcc-9
             cxx: g++-9
     env:
