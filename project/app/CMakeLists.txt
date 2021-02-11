@@ -17,6 +17,7 @@ set(SOURCE_FILES
     modules/bilibili.cpp
     modules/saucenao.cpp
     modules/setu.cpp
+    modules/aorb.cpp
     ) # Add new source files into this list
 
 find_package(ZLIB)

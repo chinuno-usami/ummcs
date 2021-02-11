@@ -7,6 +7,7 @@
 #include "bilibili.h"
 #include "saucenao.h"
 #include "setu.h"
+#include "aorb.h"
 #include "log.h"
 using namespace ummcs;
 
@@ -18,6 +19,7 @@ void ModuleManager::regist_modules(){
     module_factories_.insert({"bilibili", [this] { return std::make_shared<Bilibili>(storage_); }});
     module_factories_.insert({"saucenao", [this] { return std::make_shared<Saucenao>(storage_); }});
     module_factories_.insert({"setu", [this] { return std::make_shared<Setu>(storage_); }});
+    module_factories_.insert({"aorb", [this] { return std::make_shared<AOrB>(storage_); }});
 }
 
 void ModuleManager::load_modules(){
