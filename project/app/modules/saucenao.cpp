@@ -56,10 +56,12 @@ mirai::Message Saucenao::process_message(const mirai::Message& msg){
 
 mirai::Message Saucenao::get_result(const std::string& text){
     using json = nlohmann::json;
+    const auto& module_config = config_->data;
+    auto api_key = toml::find<std::string>(module_config, "api_key");
     cpr::Response r = cpr::Get(cpr::Url{"https://saucenao.com/search.php"},
                                 cpr::Parameters{{"db", "999"}, {"output_type", "2"},
                                                 {"testmode", "1"}, {"url", text},
-                                                {"api_key", std::to_string(std::time(0))}});
+                                                {"api_key", api_key}});
     if (r.status_code != 200)
     {
         std::string ret(u8"好像有点问题。。等下再试试看:");

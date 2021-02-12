@@ -6,6 +6,7 @@ admins = [ADMIN_QQ_NUM]
 [modules.saucenao]
 name = "搜图"
 enable = true
+api_key = ""
 groups_enable = []
 users_enable = []
 admins = []
