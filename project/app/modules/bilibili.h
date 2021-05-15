@@ -8,7 +8,7 @@ namespace ummcs{
     class Bilibili : public ModuleInterface
     {
         struct VideoInfo {
-            unsigned int aid;
+            std::string id;
             std::string pic;
             std::string title;
             std::string desc;
@@ -17,7 +17,9 @@ namespace ummcs{
         };
         enum class IdType {
             AID,
-            BVID
+            BVID,
+            SSID,
+            EPID
         };
     public:
         Bilibili() = delete;
@@ -29,5 +31,7 @@ namespace ummcs{
 
         VideoInfo get_info_app(const std::string& url);
         VideoInfo get_info(IdType type, const std::string& id);
+        VideoInfo get_bgm_info(IdType type, const std::string& id);
+        VideoInfo get_video_info(IdType type, const std::string& id);
     };
 }

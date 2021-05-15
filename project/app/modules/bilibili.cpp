@@ -23,13 +23,16 @@ void Bilibili::process(const mirai::Event& e, mirai::Session& sess) {
         static const std::regex re_app(u8R"RE(https?:\\?\\?/\\?\\?/b23.tv\\?\\?/([0-9a-zA-Z]+))RE");
         static const std::regex re_aid(u8R"RE(https?:\\?\\?/\\?\\?/www.bilibili.com\\?\\?/video\\?\\?/av(\d+))RE");
         static const std::regex re_bid(u8R"RE(https?:\\?\\?/\\?\\?/www.bilibili.com\\?\\?/video\\?\\?/(BV[0-9a-zA-Z]+))RE");
+        static const std::regex re_ssid(u8R"RE(https?:\\?\\?/\\?\\?/www.bilibili.com\\?\\?/bangumi\\?\\?/play\\?\\?/ss(\d+))RE");
+        static const std::regex re_epid(u8R"RE(https?:\\?\\?/\\?\\?/www.bilibili.com\\?\\?/bangumi\\?\\?/play\\?\\?/ep(\d+))RE");
         std::smatch match;
         if (std::regex_search(str, match, re_app)){
             // 检查是否小程序
             if(str.find(R"(\[QQ小程序\]哔哩哔哩)") != std::string::npos){
-                mirai::msg::Image meme;
-                meme.url = "https://i.loli.net/2020/04/27/HegAkGhcr6lbPXv.png";
-                sess.send_message(ev.sender.group.id, mirai::Message(meme));
+                //mirai::msg::Image meme;
+                //meme.url = "https://i.loli.net/2020/04/27/HegAkGhcr6lbPXv.png";
+                //sess.send_message(ev.sender.group.id, mirai::Message(meme));
+                sess.send_message(ev.sender.group.id, mirai::Message(u8"拒绝小程序，多发av号，关心电脑党，从你我做起.jpg"));
             }
             const auto [path] = mirai::utils::parse_captures<void, std::string>(match);
             info = get_info_app(path);
@@ -39,6 +42,12 @@ void Bilibili::process(const mirai::Event& e, mirai::Session& sess) {
         } else if (std::regex_search(str, match, re_bid)) {
             const auto [id] = mirai::utils::parse_captures<void, std::string>(match);
             info = get_info(Bilibili::IdType::BVID, id);
+        } else if (std::regex_search(str, match, re_ssid)) {
+            const auto [id] = mirai::utils::parse_captures<void, std::string>(match);
+            info = get_info(Bilibili::IdType::SSID, id);
+        } else if (std::regex_search(str, match, re_epid)) {
+            const auto [id] = mirai::utils::parse_captures<void, std::string>(match);
+            info = get_info(Bilibili::IdType::EPID, id);
         } else {
             return;
         }
@@ -48,7 +57,7 @@ void Bilibili::process(const mirai::Event& e, mirai::Session& sess) {
         cover.url = info.pic;
         ret += cover;
         std::stringstream ss;
-        ss << u8"\nav" << info.aid << std::endl;
+        ss << u8"\n" << info.id << std::endl;
         ss << u8"标题:" << info.title << std::endl;
         ss << u8"UP:" << info.up << std::endl;
         ss << u8"简介:" << info.desc << std::endl;
@@ -59,6 +68,7 @@ void Bilibili::process(const mirai::Event& e, mirai::Session& sess) {
 }
 
 Bilibili::VideoInfo Bilibili::get_info_app(const std::string& path){
+    namespace ut = mirai::utils;
     static const std::string prefix("https://b23.tv/");
     std::string short_url = prefix+path;
     cpr::Url url = cpr::Url{ short_url };
@@ -80,10 +90,30 @@ Bilibili::VideoInfo Bilibili::get_info_app(const std::string& path){
     auto bvloc = redirect_noparamv.rfind('/');
     std::string_view bv = redirect_noparamv.substr(bvloc+1, paramloc-bvloc);
 
+    if (ut::starts_with(bv, "ep")){
+        // ep类型的用其他方式解析
+        return get_info(Bilibili::IdType::EPID, std::string(bv.substr(2)));
+    } else if (ut::starts_with(bv, "ss")){
+        // ep类型的用其他方式解析
+        return get_info(Bilibili::IdType::SSID, std::string(bv.substr(2)));
+    }
+
     return get_info(Bilibili::IdType::BVID, std::string(bv));
 }
 
 Bilibili::VideoInfo Bilibili::get_info(Bilibili::IdType type, const std::string& id){
+    switch(type){
+        case Bilibili::IdType::EPID:
+        case Bilibili::IdType::SSID:
+            return get_bgm_info(type, id);
+        case Bilibili::IdType::AID:
+        case Bilibili::IdType::BVID:
+            return get_video_info(type, id);
+    }
+    return VideoInfo();
+}
+
+Bilibili::VideoInfo Bilibili::get_video_info(Bilibili::IdType type, const std::string& id){
     using json = nlohmann::json;
     LOG_DEBUG("id:%s", id.c_str());
     std::string key = type==Bilibili::IdType::AID?"aid":"bvid";
@@ -95,7 +125,7 @@ Bilibili::VideoInfo Bilibili::get_info(Bilibili::IdType type, const std::string&
     info.pic = jdata["pic"].get<std::string>();
     info.title = jdata["title"].get<std::string>();
     info.desc = jdata["desc"].get<std::string>();
-    info.aid = jdata["aid"].get<unsigned int>();
+    info.id = std::string("av")+std::to_string(jdata["aid"].get<unsigned int>());
     info.up = jdata["owner"]["name"].get<std::string>();
     info.link = "https://www.bilibili.com/video/";
     switch(type){
@@ -110,5 +140,29 @@ Bilibili::VideoInfo Bilibili::get_info(Bilibili::IdType type, const std::string&
             info.link = u8"获取链接失败";
             break;
     }
+    return info;
+}
+
+Bilibili::VideoInfo Bilibili::get_bgm_info(Bilibili::IdType type, const std::string& id){
+    using json = nlohmann::json;
+    std::string key;
+    if(type == Bilibili::IdType::EPID){
+        key = "ep_id";
+        LOG_DEBUG("ep id:%s", id.c_str());
+    } else {
+        key = "season_id";
+        LOG_DEBUG("ss id:%s", id.c_str());
+    }
+    cpr::Response r = cpr::Get(cpr::Url{"https://api.bilibili.com/pgc/view/web/season"}, cpr::Parameters{{key, id}});
+    auto j = json::parse(r.text);
+    auto jdata = j["result"];
+    LOG_DEBUG("info:%s",r.text.c_str());
+    Bilibili::VideoInfo info;
+    info.pic = jdata["cover"].get<std::string>();
+    info.title = jdata["season_title"].get<std::string>();
+    info.desc = jdata["evaluate"].get<std::string>();
+    info.id = std::string("ss")+std::to_string(jdata["season_id"].get<unsigned int>());
+    info.up = jdata["up_info"]["uname"].get<std::string>();
+    info.link = jdata["share_url"].get<std::string>();
     return info;
 }
